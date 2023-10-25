@@ -50,8 +50,10 @@ public with sharing class CookieConsentService {
       sectionItem.put('AdditionalInformation', cookieConsentCategory.AdditionalInformation__c);
       sectionItem.put('SectionCookies', relatedCookies);
       if (finalCookieData.isEmpty()) {
-        sectionItem.put('ShowSection', true);
-        sectionItem.put('SectionIcon', 'utility:chevrondown');
+        //sectionItem.put('ShowSection', true);
+        //sectionItem.put('SectionIcon', 'utility:chevrondown');
+        sectionItem.put('ShowSection', false);
+        sectionItem.put('SectionIcon', 'utility:chevronright');
       } else {
         sectionItem.put('ShowSection', false);
         sectionItem.put('SectionIcon', 'utility:chevronright');
