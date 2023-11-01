@@ -1,0 +1,23 @@
+<template>
+    <span
+      data-displayuser-id="displayuser"
+      data-displayuser-userid={displayUserId}
+      data-displayuser-username={displayUserUsername}
+      data-displayuser-name={displayUserName}
+      data-displayuser-useremail={displayUserEmail}
+      data-displayuser-language={displayUserLanguage}
+      data-displayuser-languagelocalekey={displayUserLanguageLocaleKey}
+      data-displayuser-error={displayUserError}
+    ></span>
+    <template if:true={userDataVisible}>
+      <div class="slds-m-around_medium">
+        <p>User Id: {displayUserId}</p>
+        <p>Name: {displayUserName}</p>
+        <p>User Name: {displayUserUsername}</p>
+        <p>User Email: {displayUserEmail}</p>
+        <p>Language: {displayUserLanguage}</p>
+        <p>LanguageLocaleKey: {displayUserLanguageLocaleKey}</p>
+        <p>Error: {displayUserError}</p>
+      </div>
+    </template>
+  </template>
