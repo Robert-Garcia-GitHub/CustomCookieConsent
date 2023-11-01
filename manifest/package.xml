@@ -50,16 +50,16 @@
         <name>CustomField</name>
     </types>
     <types>
-        <members>CookieConsentCategory__c</members>
-        <members>CookieConsent__c</members>
-        <members>Cookie__c</members>
         <members>Individual</members>
+        <members>CookieConsentCategory__c</members>
+        <members>Cookie__c</members>
+        <members>CookieConsent__c</members>
         <name>CustomObject</name>
     </types>
     <types>
         <members>CookieConsentCategory__c</members>
-        <members>CookieConsent__c</members>
         <members>Cookie__c</members>
+        <members>CookieConsent__c</members>
         <name>CustomTab</name>
     </types>
     <types>
