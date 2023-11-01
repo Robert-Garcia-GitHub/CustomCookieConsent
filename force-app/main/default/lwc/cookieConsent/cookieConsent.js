@@ -4,7 +4,14 @@ import createCookieConsentRecords from "@salesforce/apex/CookieConsentServiceGue
 import verifyBrowserId from "@salesforce/apex/CookieConsentService.verifyBrowserId";
 import getCookiesToDelete from "@salesforce/apex/CookieConsentServiceGuestHelper.getCookiesToDelete";
 
+import cookieConsentAcceptLabel from "@salesforce/label/c.CookieConsent_Accept";
+import cookieConsentDeclineLabel from "@salesforce/label/c.CookieConsent_Decline";
+
 export default class CookieConsent extends LightningElement {
+  // labels
+  acceptLabel = cookieConsentAcceptLabel;
+  declineLabel = cookieConsentDeclineLabel;
+
   // State
   @api displayType = "footer";
   @api useRelaxedCSP = false;
@@ -40,7 +47,10 @@ export default class CookieConsent extends LightningElement {
   error;
 
   connectedCallback() {
-    this.checkIfInPreview();
+    console.log(this.acceptLabel);
+    console.log(this.declineLabel);
+    
+      this.checkIfInPreview();
     if (this.useRelaxedCSP && !this.preview) {
       this.getBrowserIdCookie();
     } else if (!this.useRelaxedCSP && !this.preview) {
