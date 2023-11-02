@@ -34,17 +34,28 @@ export default class Userinfoexample extends LightningElement {
     this.displayUserLanguageLocaleKey = await getLanguageLocaleKey();
   }
 
-  getQueryParams(url) {
+  getQueryParams(url, decode) {
     const paramArr = url.slice(url.indexOf("?") + 1).split("&");
-    const params = {};
+    const params = [];
+    var count = 0;
     paramArr.map((param) => {
       const [key, val] = param.split("=");
-      params[key] = decodeURIComponent(val);
+      if (decode === true) {
+        params[key] = decodeURIComponent(val);
+      } else {
+        params[key] = val;
+      }
+      count++;
     });
+    params[""] = count;
     return params;
   }
 
   renderedCallback() {
-    console.log(this.getQueryParams(window.location.href));
+    var params = this.getQueryParams(window.location.href, false);
+    console.log(params[""]);
+    for (var key in params) {
+      console.log(key + " = " + params[key]);
+    }
   }
 }
