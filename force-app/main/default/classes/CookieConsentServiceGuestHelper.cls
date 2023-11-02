@@ -129,15 +129,17 @@ public without sharing class CookieConsentServiceGuestHelper {
   public static List<CookieConsentCategory__c> getCookieConsentCategoriesLang(
     String htmlLang
   ) {
-    List<CookieConsentCategory__c> result = new List<CookieConsent__c>();
+    List<CookieConsentCategory__c> result = new List<CookieConsentCategory__c>();
     String key = '';
 
     // get translations
     List<CookieConsentCategoryTranslation__c> translations = [
       SELECT
+        AdditionalInformation__c,
         CookieConsentCategory__r.Id,
         CookieConsentCategory__r.Name,
         Name,
+        Name__c,
         Language__c,
         Description__c
       FROM CookieConsentCategoryTranslation__c
@@ -149,7 +151,7 @@ public without sharing class CookieConsentServiceGuestHelper {
     for (CookieConsentCategoryTranslation__c translation : translations) {
       // this is the key used to access the translation
       key = translation.CookieConsentCategory__r.Name + ' ' + htmlLang;
-
+      System.Debug('key for map = ' + key);
       // add it in only once
       if (!translationMap.containsKey(key)) {
         translationMap.put(key, translation);
@@ -185,10 +187,12 @@ public without sharing class CookieConsentServiceGuestHelper {
 
       // check if a translation exists
       key = translated.Name + ' ' + htmlLang;
+      System.Debug('key for lookup = ' + key);
       if (translationMap.containsKey(key)) {
-        translated.Description__c = translationMap.get(Key).Description__c;
-        translated.AdditionalInformation__c = translationMap.get(Key)
-          .AdditionalInformation__c;
+        CookieConsentCategoryTranslation__c mapValue = translationMap.get(Key); 
+        translated.Name = mapValue.Name__c;
+        translated.Description__c = mapValue.Description__c;
+        translated.AdditionalInformation__c = mapValue.AdditionalInformation__c;
       }
 
       // add the cookie to the returned result
