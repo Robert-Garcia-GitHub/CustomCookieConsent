@@ -149,22 +149,17 @@
     <enableHistory>false</enableHistory>
     <enableLicensing>false</enableLicensing>
     <enableReports>false</enableReports>
-    <enableSearch>true</enableSearch>
+    <enableSearch>false</enableSearch>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
-    <externalSharingModel>Private</externalSharingModel>
-    <label>Cookie Consent</label>
+    <externalSharingModel>ControlledByParent</externalSharingModel>
+    <label>Cookie Translation</label>
     <nameField>
-        <label>Cookie Consent Name</label>
+        <label>Cookie Translation Name</label>
         <type>Text</type>
     </nameField>
-    <pluralLabel>Cookie Consent Records</pluralLabel>
-    <searchLayouts>
-        <searchResultsAdditionalFields>ConsentGiverId__c</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>Status__c</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>CookieConsentCategory__c</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>ConsentCapturedSourceType__c</searchResultsAdditionalFields>
-    </searchLayouts>
-    <sharingModel>ReadWrite</sharingModel>
+    <pluralLabel>Cookie Translations</pluralLabel>
+    <searchLayouts></searchLayouts>
+    <sharingModel>ControlledByParent</sharingModel>
     <visibility>Public</visibility>
 </CustomObject>

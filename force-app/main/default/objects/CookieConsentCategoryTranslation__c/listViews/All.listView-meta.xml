@@ -2,8 +2,9 @@
 <ListView xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>All</fullName>
     <columns>NAME</columns>
-    <columns>Manditory__c</columns>
-    <columns>DefaultValue__c</columns>
+    <columns>CookieConsentCategory__c</columns>
+    <columns>Language__c</columns>
+    <columns>Name__c</columns>
     <columns>Description__c</columns>
     <columns>AdditionalInformation__c</columns>
     <filterScope>Everything</filterScope>

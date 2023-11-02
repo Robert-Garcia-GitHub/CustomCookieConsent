@@ -47,12 +47,16 @@ export default class CookieConsent extends LightningElement {
   error;
 
   connectedCallback() {
-      this.checkIfInPreview();
+    this.checkIfInPreview();
     if (this.useRelaxedCSP && !this.preview) {
       this.getBrowserIdCookie();
     } else if (!this.useRelaxedCSP && !this.preview) {
       try {
-        window.addEventListener("documentCookies", this.receiveCookiesFromHead.bind(this), false);
+        window.addEventListener(
+          "documentCookies",
+          this.receiveCookiesFromHead.bind(this),
+          false
+        );
       } catch (e) {
         console.log("error: " + e);
       }
@@ -72,9 +76,10 @@ export default class CookieConsent extends LightningElement {
       this.preview = false;
     } else {
       urlToCheck = urlToCheck.toLowerCase();
-      this.preview = urlToCheck.indexOf("sitepreview") >= 0 || urlToCheck.indexOf("livepreview") >= 0;  
+      this.preview =
+        urlToCheck.indexOf("sitepreview") >= 0 ||
+        urlToCheck.indexOf("livepreview") >= 0;
     }
-
   }
 
   getCookiesFromHead() {
@@ -88,18 +93,17 @@ export default class CookieConsent extends LightningElement {
     this.uniqueId = e.detail;
     if (this.uniqueId) {
       this.verifyBrowserIdWithUniqueId();
-    } else if(this.callCount <= 5) {
+    } else if (this.callCount <= 5) {
       this.getCookiesFromHead();
     } else {
       this.showConnectionError = true;
     }
   }
 
-
   @api
   verifyBrowserIdWithUniqueId() {
     verifyBrowserId({ browserId: this.uniqueId })
-      .then(data => {
+      .then((data) => {
         if (data === false) {
           this.getCookieSectionsAndData();
         } else if (this.displayType === "page") {
@@ -109,7 +113,7 @@ export default class CookieConsent extends LightningElement {
         }
         this.showCookieDialog = !data;
       })
-      .catch(error => {
+      .catch((error) => {
         this.error = error.message;
       });
   }
@@ -117,40 +121,45 @@ export default class CookieConsent extends LightningElement {
   @api
   getCookieSectionsAndData() {
     getCookieData()
-      .then(data => {
+      .then((data) => {
         this.cookieData = [...data];
-        console.log('cookies', JSON.stringify(this.cookieData));
+        console.log("cookies", JSON.stringify(this.cookieData));
         this.setStartingCookiePreferences(data);
         this.loading = false;
       })
-      .catch(error => {});
+      .catch((error) => {});
   }
 
   @api
   setStartingCookiePreferences(cookieData) {
     for (let i = 0, len = cookieData.length; i < len; i++) {
-      this.cookiePreferences.push({ authorizationFormId: cookieData[i].RelatedAuthorizationFormId, value: cookieData[i].DefaultValue });
+      this.cookiePreferences.push({
+        authorizationFormId: cookieData[i].RelatedAuthorizationFormId,
+        value: cookieData[i].DefaultValue
+      });
     }
   }
 
   getCookiesAndDeleteThem() {
     getCookiesToDelete({ browserId: this.uniqueId })
-      .then(data => {
+      .then((data) => {
         if (this.useRelaxedCSP) {
           this.deleteCookiesOutsideLocker(data);
         } else {
           this.deleteCookiesInsideLocker(data);
         }
       })
-      .catch(error => {
+      .catch((error) => {
         this.error = error.message;
       });
   }
 
   deleteCookiesOutsideLocker(cookies) {
     for (let i = 0, len = cookies.length; i < len; i++) {
-      let cookieWithStandardPath = cookies[i] + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/;";
-      let cookieWithCommunityPath = cookies[i] + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/s;";
+      let cookieWithStandardPath =
+        cookies[i] + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/;";
+      let cookieWithCommunityPath =
+        cookies[i] + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/s;";
       document.cookie = cookieWithStandardPath;
       document.cookie = cookieWithCommunityPath;
     }
@@ -162,11 +171,14 @@ export default class CookieConsent extends LightningElement {
   }
 
   acceptCookies() {
-    createCookieConsentRecords({ browserId: this.uniqueId, cookiePreferences: this.cookiePreferences })
-      .then(data => {
+    createCookieConsentRecords({
+      browserId: this.uniqueId,
+      cookiePreferences: this.cookiePreferences
+    })
+      .then((data) => {
         this.showCookieDialog = false;
       })
-      .catch(error => {
+      .catch((error) => {
         this.error = error.message;
       });
   }
@@ -185,7 +197,10 @@ export default class CookieConsent extends LightningElement {
   updateSectionStatus(event) {
     let authorizationFormId = event.target.name;
     let value = event.target.checked;
-    let updatedPreference = { authorizationFormId: authorizationFormId, value: value };
+    let updatedPreference = {
+      authorizationFormId: authorizationFormId,
+      value: value
+    };
     const newArray = [].concat(this.cookiePreferences, updatedPreference);
     this.cookiePreferences = newArray;
     this.dedupeCookiePreferences(this.cookiePreferences);
@@ -234,7 +249,9 @@ export default class CookieConsent extends LightningElement {
   }
 
   get headingStyle() {
-    return "font-size:1.2rem;font-weight:bold;color:" + this.cookieFooterTextColor;
+    return (
+      "font-size:1.2rem;font-weight:bold;color:" + this.cookieFooterTextColor
+    );
   }
 
   get textStyle() {
@@ -242,7 +259,9 @@ export default class CookieConsent extends LightningElement {
   }
 
   get linkStyle() {
-    return "font-size:.9rem;font-weight:bold;color:" + this.cookieFooterLinkColor;
+    return (
+      "font-size:.9rem;font-weight:bold;color:" + this.cookieFooterLinkColor
+    );
   }
 
   get backgroundStyle() {
