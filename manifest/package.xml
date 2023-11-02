@@ -49,8 +49,10 @@
 		<name>CustomObject</name>
 	</types>
 	<types>
+		<members>CookieConsentCategoryTranslation__c</members>
 		<members>CookieConsentCategory__c</members>
 		<members>CookieConsent__c</members>
+		<members>CookieTranslation__c</members>
 		<members>Cookie__c</members>
 		<name>CustomTab</name>
 	</types>
