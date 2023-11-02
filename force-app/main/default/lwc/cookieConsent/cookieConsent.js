@@ -47,9 +47,6 @@ export default class CookieConsent extends LightningElement {
   error;
 
   connectedCallback() {
-    console.log(this.acceptLabel);
-    console.log(this.declineLabel);
-    
       this.checkIfInPreview();
     if (this.useRelaxedCSP && !this.preview) {
       this.getBrowserIdCookie();
