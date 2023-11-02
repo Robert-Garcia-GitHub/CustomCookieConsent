@@ -4,8 +4,15 @@ public without sharing class CookieConsentServiceGuestHelper {
    * @param browserId - the unique browser Id passed from the community
    */
   public static Individual getIndividualByBrowserId(String browserId) {
-    List<Individual> individuals = [SELECT Id, BrowserId__c FROM Individual WHERE BrowserId__c = :browserId LIMIT 1];
-    Individual individual = (individuals.size() == 1) ? individuals.get(0) : null;
+    List<Individual> individuals = [
+      SELECT Id, BrowserId__c
+      FROM Individual
+      WHERE BrowserId__c = :browserId
+      LIMIT 1
+    ];
+    Individual individual = (individuals.size() == 1)
+      ? individuals.get(0)
+      : null;
     return individual;
   }
 
@@ -14,7 +21,10 @@ public without sharing class CookieConsentServiceGuestHelper {
    * @param individualId - the individualId associated to the user that is accepting the terms
    * @param relatedAuthorizationFormNames - the list of authorization form records that is being used to create the consent records
    */
-  public static List<CookieConsent__c> createAuthorizationFormConsentRecords(Id individualId, List<Map<String, String>> cookiePreferences) {
+  public static List<CookieConsent__c> createAuthorizationFormConsentRecords(
+    Id individualId,
+    List<Map<String, String>> cookiePreferences
+  ) {
     List<CookieConsent__c> authorizationFormConsentRecords = new List<CookieConsent__c>();
     for (Map<String, String> cookiePreference : cookiePreferences) {
       List<CookieConsentCategory__c> cookieConsentCategories = [
@@ -24,7 +34,10 @@ public without sharing class CookieConsentServiceGuestHelper {
         //WITH SECURITY_ENFORCED
         LIMIT 1
       ];
-      CookieConsentCategory__c cookieConsentCategory = (cookieConsentCategories.size() == 1) ? cookieConsentCategories.get(0) : null;
+      CookieConsentCategory__c cookieConsentCategory = (cookieConsentCategories.size() ==
+        1)
+        ? cookieConsentCategories.get(0)
+        : null;
       CookieConsent__c newAuthorizationFormConsentRecord = new CookieConsent__c();
       newAuthorizationFormConsentRecord.Name = cookieConsentCategory.Name;
       newAuthorizationFormConsentRecord.CookieConsentCategory__c = cookieConsentCategory.Id;
@@ -55,11 +68,14 @@ public without sharing class CookieConsentServiceGuestHelper {
    */
   public static Boolean verifyCookieConsentGranted(Id individualId) {
     List<CookieConsentCategory__c> cookieConsentCategories = getCookieConsentCategories();
-    Set<Id> authFormIds = (new Map<Id, SObject>(cookieConsentCategories)).keySet();
+    Set<Id> authFormIds = (new Map<Id, SObject>(cookieConsentCategories))
+      .keySet();
     List<CookieConsent__c> authorizationFormConsents = [
       SELECT Id
       FROM CookieConsent__c
-      WHERE CookieConsentCategory__c IN :authFormIds AND ConsentGiverId__c = :individualId
+      WHERE
+        CookieConsentCategory__c IN :authFormIds
+        AND ConsentGiverId__c = :individualId
       //WITH SECURITY_ENFORCED
     ];
     if (authorizationFormConsents.size() >= cookieConsentCategories.size()) {
@@ -75,7 +91,10 @@ public without sharing class CookieConsentServiceGuestHelper {
    */
   public static Id createIndividualRecord(Id userId, String browserId) {
     List<Individual> newIndividuals = new List<Individual>();
-    Individual newIndividual = new Individual(LastName = browserId, BrowserId__c = browserId);
+    Individual newIndividual = new Individual(
+      LastName = browserId,
+      BrowserId__c = browserId
+    );
     newIndividuals.add(newIndividual);
     /*
     SObjectAccessDecision sanitisedRecords = Security.stripInaccessible(AccessType.CREATABLE, newIndividuals);
@@ -91,16 +110,156 @@ public without sharing class CookieConsentServiceGuestHelper {
    */
   public static List<CookieConsentCategory__c> getCookieConsentCategories() {
     List<CookieConsentCategory__c> cookieConsentCategories = [
-      SELECT DefaultValue__c, Description__c, Manditory__c, AdditionalInformation__c, Id, Name
+      SELECT
+        DefaultValue__c,
+        Description__c,
+        Manditory__c,
+        AdditionalInformation__c,
+        Id,
+        Name
       FROM CookieConsentCategory__c
       ORDER BY Name
     ];
     return cookieConsentCategories;
   }
 
+  /**
+   * @description - Reusable SOQL Queries Cookie Records
+   */
+  public static List<CookieConsentCategory__c> getCookieConsentCategoriesLang(
+    String htmlLang
+  ) {
+    List<CookieConsentCategory__c> result = new List<CookieConsent__c>();
+    String key = '';
+
+    // get translations
+    List<CookieConsentCategoryTranslation__c> translations = [
+      SELECT
+        CookieConsentCategory__r.Id,
+        CookieConsentCategory__r.Name,
+        Name,
+        Language__c,
+        Description__c
+      FROM CookieConsentCategoryTranslation__c
+      WHERE Language__c = :htmlLang
+    ];
+
+    // build a translation map so we can look them up
+    Map<String, CookieConsentCategoryTranslation__c> translationMap = new Map<String, CookieConsentCategoryTranslation__c>();
+    for (CookieConsentCategoryTranslation__c translation : translations) {
+      // this is the key used to access the translation
+      key = translation.CookieConsentCategory__r.Name + ' ' + htmlLang;
+
+      // add it in only once
+      if (!translationMap.containsKey(key)) {
+        translationMap.put(key, translation);
+      }
+    }
+
+    // get cookie consent categories
+    List<CookieConsentCategory__c> cookieConsentCategories = [
+      SELECT
+        DefaultValue__c,
+        Description__c,
+        Manditory__c,
+        AdditionalInformation__c,
+        Id,
+        Name
+      FROM CookieConsentCategory__c
+      ORDER BY Name
+    ];
+
+    // for each cookie consent category, try to translate
+    for (
+      CookieConsentCategory__c cookieConsentCategory : cookieConsentCategories
+    ) {
+      // make a copy of the cookie consent category to translate
+      CookieConsentCategory__c translated = new CookieConsentCategory__c(
+        DefaultValue__c = cookieConsentCategory.DefaultValue__c,
+        Description__c = cookieConsentCategory.Description__c,
+        Manditory__c = cookieConsentCategory.Manditory__c,
+        AdditionalInformation__c = cookieConsentCategory.AdditionalInformation__c,
+        Id = cookieConsentCategory.Id,
+        Name = cookieConsentCategory.Name
+      );
+
+      // check if a translation exists
+      key = translated.Name + ' ' + htmlLang;
+      if (translationMap.containsKey(key)) {
+        translated.Description__c = translationMap.get(Key).Description__c;
+        translated.AdditionalInformation__c = translationMap.get(Key)
+          .AdditionalInformation__c;
+      }
+
+      // add the cookie to the returned result
+      result.add(translated);
+    }
+
+    return result;
+  }
+
   public static List<Cookie__c> getRelatedCookies(Id cookieConsentCategoryId) {
-    List<Cookie__c> relatedCookies = [SELECT Description__c, Id, Name FROM Cookie__c WHERE CookieConsentCategory__c = :cookieConsentCategoryId];
+    List<Cookie__c> relatedCookies = [
+      SELECT Description__c, Id, Name
+      FROM Cookie__c
+      WHERE CookieConsentCategory__c = :cookieConsentCategoryId
+    ];
     return relatedCookies;
+  }
+
+  public static List<Cookie__c> getRelatedCookiesLang(
+    Id cookieConsentCategoryId,
+    string htmlLang
+  ) {
+    List<Cookie__c> result = new List<Cookie__c>();
+    String key = '';
+
+    // get translations
+    List<CookieTranslation__c> translations = [
+      SELECT Cookie__r.Id, Cookie__r.Name, Name, Language__c, Description__c
+      FROM CookieTranslation__c
+      WHERE Language__c = :htmlLang
+    ];
+
+    // build a translation map so we can look them up
+    Map<String, CookieTranslation__c> translationMap = new Map<String, CookieTranslation__c>();
+    for (CookieTranslation__c translation : translations) {
+      // this is the key used to access the translation
+      key = translation.Cookie__r.Name + ' ' + htmlLang;
+
+      // add it in only once
+      if (!translationMap.containsKey(key)) {
+        translationMap.put(key, translation);
+      }
+    }
+
+    // get related cookies
+    List<Cookie__c> relatedCookies = [
+      SELECT Description__c, Id, Name
+      FROM Cookie__c
+      WHERE CookieConsentCategory__c = :cookieConsentCategoryId
+    ];
+
+    // for each related cookie, try to translate
+    for (Cookie__c cookie : relatedCookies) {
+      // make a copy of the cookie to translate
+      Cookie__c translated = new Cookie__c(
+        Id = cookie.Id,
+        Name = cookie.Name,
+        Description__c = cookie.Description__c
+      );
+
+      // check if a translation exists
+      key = translated.Name + ' ' + htmlLang;
+      if (translationMap.containsKey(key)) {
+        translated.Description__c = translationMap.get(Key).Description__c;
+      }
+
+      // add the cookie to the returned result
+      result.add(translated);
+    }
+
+    return result;
   }
 
   /**
@@ -108,7 +267,12 @@ public without sharing class CookieConsentServiceGuestHelper {
    * @param userId - the userId of the logged in user
    */
   public static User getLoggedInUserDetails(Id userId) {
-    List<User> users = [SELECT FirstName, LastName, IndividualId FROM User WHERE Id = :userId LIMIT 1];
+    List<User> users = [
+      SELECT FirstName, LastName, IndividualId
+      FROM User
+      WHERE Id = :userId
+      LIMIT 1
+    ];
     User user = (users.size() == 1) ? users.get(0) : null;
     return user;
   }
@@ -125,13 +289,23 @@ public without sharing class CookieConsentServiceGuestHelper {
     for (CookieConsent__c consent : [
       SELECT CookieConsentCategory__c
       FROM CookieConsent__c
-      WHERE ConsentGiverId__c IN (SELECT Id FROM Individual WHERE BrowserId__c = :browserId) AND Status__c = 'Declined'
+      WHERE
+        ConsentGiverId__c IN (
+          SELECT Id
+          FROM Individual
+          WHERE BrowserId__c = :browserId
+        )
+        AND Status__c = 'Declined'
     ]) {
       categoryIds.add(consent.CookieConsentCategory__c);
     }
 
     List<String> cookieNames = new List<String>();
-    for (Cookie__c cookie : [SELECT Id, Name FROM Cookie__c WHERE CookieConsentCategory__c IN :categoryIds]) {
+    for (Cookie__c cookie : [
+      SELECT Id, Name
+      FROM Cookie__c
+      WHERE CookieConsentCategory__c IN :categoryIds
+    ]) {
       cookieNames.add(cookie.Name);
     }
     return cookieNames;
@@ -142,9 +316,17 @@ public without sharing class CookieConsentServiceGuestHelper {
    * @param browserId - the unique browser Id passed from the community
    */
   @AuraEnabled
-  public static boolean createCookieConsentRecords(String browserId, List<Map<String, String>> cookiePreferences) {
-    Individual individual = CookieConsentServiceGuestHelper.getIndividualByBrowserId(browserId);
-    List<CookieConsent__c> createdConsentRecords = CookieConsentServiceGuestHelper.createAuthorizationFormConsentRecords(individual.Id, cookiePreferences);
+  public static boolean createCookieConsentRecords(
+    String browserId,
+    List<Map<String, String>> cookiePreferences
+  ) {
+    Individual individual = CookieConsentServiceGuestHelper.getIndividualByBrowserId(
+      browserId
+    );
+    List<CookieConsent__c> createdConsentRecords = CookieConsentServiceGuestHelper.createAuthorizationFormConsentRecords(
+      individual.Id,
+      cookiePreferences
+    );
     if (createdConsentRecords != null) {
       return true;
     }

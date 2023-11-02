@@ -1,16 +1,21 @@
 import { LightningElement, track, api } from "lwc";
 import getCookieData from "@salesforce/apex/CookieConsentService.getCookieData";
+import getCookieDataLang from "@salesforce/apex/CookieConsentService.getCookieDataLang";
 import createCookieConsentRecords from "@salesforce/apex/CookieConsentServiceGuestHelper.createCookieConsentRecords";
 import verifyBrowserId from "@salesforce/apex/CookieConsentService.verifyBrowserId";
 import getCookiesToDelete from "@salesforce/apex/CookieConsentServiceGuestHelper.getCookiesToDelete";
 
 import cookieConsentAcceptLabel from "@salesforce/label/c.CookieConsent_Accept";
 import cookieConsentDeclineLabel from "@salesforce/label/c.CookieConsent_Decline";
+import cookieConsentNameLabel from "@salesforce/label/c.CookieConsent_Name";
+import cookieConsentDescriptionLabel from "@salesforce/label/c.CookieConsent_Description";
 
 export default class CookieConsent extends LightningElement {
   // labels
-  acceptLabel = cookieConsentAcceptLabel;
-  declineLabel = cookieConsentDeclineLabel;
+  @track acceptLabel = cookieConsentAcceptLabel;
+  @track declineLabel = cookieConsentDeclineLabel;
+  @track nameLabel = cookieConsentNameLabel;
+  @track descriptionLabel = cookieConsentDescriptionLabel;
 
   // State
   @api displayType = "footer";
@@ -27,6 +32,7 @@ export default class CookieConsent extends LightningElement {
   uniqueId;
   client;
   callCount = 0;
+  htmlLang = "";
 
   // Design
   @api headingLabel = "Manage Cookies";
@@ -47,6 +53,12 @@ export default class CookieConsent extends LightningElement {
   error;
 
   connectedCallback() {
+    console.log(this.acceptLabel);
+    console.log(this.declineLabel);
+    console.log(this.nameLabel);
+    console.log(this.descriptionLabel);
+
+    this.htmlLang= document.querySelector("html").lang;
     this.checkIfInPreview();
     if (this.useRelaxedCSP && !this.preview) {
       this.getBrowserIdCookie();
@@ -120,7 +132,8 @@ export default class CookieConsent extends LightningElement {
 
   @api
   getCookieSectionsAndData() {
-    getCookieData()
+    console.log("getCookieSectiosAndData htmlLang = " + this.htmlLang);
+    getCookieDataLang({htmlLang : this.htmlLang})
       .then((data) => {
         this.cookieData = [...data];
         console.log("cookies", JSON.stringify(this.cookieData));

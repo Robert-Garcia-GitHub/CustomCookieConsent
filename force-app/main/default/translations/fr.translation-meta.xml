@@ -8,4 +8,12 @@
         <label>Refuser</label>
         <name>CookieConsent_Decline</name>
     </customLabels>
+    <customLabels>
+        <label>Nom</label>
+        <name>CookieConsent_Name</name>
+    </customLabels>
+    <customLabels>
+        <label>Description</label>
+        <name>CookieConsent_Description</name>
+    </customLabels>
 </Translations>

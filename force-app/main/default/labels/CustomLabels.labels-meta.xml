@@ -14,4 +14,18 @@
         <shortDescription>CookeConsent_Decline</shortDescription>
         <value>Decline</value>
     </labels>
+    <labels>
+        <fullName>CookieConsent_Name</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>CookeConsent_Name</shortDescription>
+        <value>Name</value>
+    </labels>
+    <labels>
+        <fullName>CookieConsent_Description</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>CookeConsent_Description</shortDescription>
+        <value>Description</value>
+    </labels>
 </CustomLabels>

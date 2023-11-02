@@ -59,10 +59,10 @@
                           <thead>
                             <tr class="slds-line-height_reset">
                               <th class="" scope="col">
-                                <div class="slds-truncate" title="Name">Name</div>
+                                <div class="slds-truncate" title={nameLabel}>Name</div>
                               </th>
                               <th class="" scope="col">
-                                <div class="slds-truncate" title="Description">
+                                <div class="slds-truncate" title={descriptionLabel}>
                                   Description
                                 </div>
                               </th>
@@ -71,13 +71,13 @@
                           <tbody>
                             <template for:each={section.SectionCookies} for:item="item" for:index="i">
                               <tr class="slds-hint-parent" key={item.i}>
-                                <th class="slds-cell-wrap word-wrap" data-label="Name" scope="row" style="width:30%">
-                                  <p class="slds-hyphenate" title="Name">
+                                <th class="slds-cell-wrap word-wrap" data-label={nameLabel} scope="row" style="width:30%">
+                                  <p class="slds-hyphenate" title={nameLabel}>
                                     {item.Name}
                                   </p>
                                 </th>
-                                <td class="slds-cell-wrap slds-wrap cookiecon-word-wrap" data-label="Name" style="width:70%">
-                                  <p class="slds-wrap" title="Description">
+                                <td class="slds-cell-wrap slds-wrap cookiecon-word-wrap" data-label={nameLabel} style="width:70%">
+                                  <p class="slds-wrap" title={descriptionLabel}>
                                     {item.Description__c}
                                   </p>
                                 </td>
@@ -179,12 +179,12 @@
                                     <thead>
                                       <tr class="slds-line-height_reset">
                                         <th class="" scope="col">
-                                          <div class="slds-truncate" title="Name">
+                                          <div class="slds-truncate" title={nameLabel}>
                                             Name
                                           </div>
                                         </th>
                                         <th class="" scope="col">
-                                          <div class="slds-truncate" title="Description">
+                                          <div class="slds-truncate" title={descriptionLabel}>
                                             Description
                                           </div>
                                         </th>
@@ -193,13 +193,13 @@
                                     <tbody>
                                       <template for:each={section.SectionCookies} for:item="item" for:index="i">
                                         <tr class="slds-hint-parent" key={item.i}>
-                                          <th class="slds-cell-wrap word-wrap" data-label="Name" scope="row" style="width:30%">
-                                            <p class="slds-hyphenate" title="Name">
+                                          <th class="slds-cell-wrap word-wrap" data-label={nameLabel} scope="row" style="width:30%">
+                                            <p class="slds-hyphenate" title={nameLabel}>
                                               {item.Name}
                                             </p>
                                           </th>
-                                          <td class="slds-cell-wrap slds-wrap cookiecon-word-wrap" data-label="Name" style="width:70%">
-                                            <p class="slds-wrap" title="Description">
+                                          <td class="slds-cell-wrap slds-wrap cookiecon-word-wrap" data-label={nameLabel} style="width:70%">
+                                            <p class="slds-wrap" title={descriptionLabel}>
                                               {item.Description__c}
                                             </p>
                                           </td>

@@ -64,5 +64,38 @@ public with sharing class CookieConsentService {
     return finalCookieData;
   }
 
+    /**
+   * getCookieDataLang is used to get all of the cookies to display to the user in the consent modal.
+   * Currently this does NOT support more than the 3 initial consent definitions.
+   */
+  @AuraEnabled(Cacheable=true)
+  public static List<Map<String, Object>> getCookieDataLang(String htmlLang) {
+    Id currentUserId = UserInfo.getUserId();
+    List<CookieConsentCategory__c> cookieConsentCategories = CookieConsentServiceGuestHelper.getCookieConsentCategoriesLang(htmlLang);
+    List<Map<String, Object>> finalCookieData = new List<Map<String, Object>>();
+    for (CookieConsentCategory__c cookieConsentCategory : cookieConsentCategories) {
+      List<Cookie__c> relatedCookies = CookieConsentServiceGuestHelper.getRelatedCookiesLang(cookieConsentCategory.Id,htmlLang);
+      Map<String, Object> sectionItem = new Map<String, Object>();
+      sectionItem.put('SectionName', cookieConsentCategory.Name);
+      sectionItem.put('SectionDescription', cookieConsentCategory.Description__c);
+      sectionItem.put('RelatedAuthorizationFormId', cookieConsentCategory.Id);
+      sectionItem.put('Mandatory', cookieConsentCategory.Manditory__c);
+      sectionItem.put('DefaultValue', cookieConsentCategory.DefaultValue__c);
+      sectionItem.put('AdditionalInformation', cookieConsentCategory.AdditionalInformation__c);
+      sectionItem.put('SectionCookies', relatedCookies);
+      if (finalCookieData.isEmpty()) {
+        //sectionItem.put('ShowSection', true);
+        //sectionItem.put('SectionIcon', 'utility:chevrondown');
+        sectionItem.put('ShowSection', false);
+        sectionItem.put('SectionIcon', 'utility:chevronright');
+      } else {
+        sectionItem.put('ShowSection', false);
+        sectionItem.put('SectionIcon', 'utility:chevronright');
+      }
+      finalCookieData.add(sectionItem);
+    }
+    System.debug(finalCookieData);
+    return finalCookieData;
+  }
 
 }
