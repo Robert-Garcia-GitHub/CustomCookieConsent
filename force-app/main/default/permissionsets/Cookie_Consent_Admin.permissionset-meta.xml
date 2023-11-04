@@ -61,12 +61,22 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>CookieConsentCategoryTranslation__c.AdditionalInformation__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>CookieConsentCategoryTranslation__c.Description__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
         <field>CookieConsentCategoryTranslation__c.Language__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>CookieConsentCategoryTranslation__c.Name__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -122,6 +132,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>CookieTranslation__c.Description__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>CookieTranslation__c.Language__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
